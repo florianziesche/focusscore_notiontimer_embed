@@ -294,16 +294,16 @@ async function nf(path,method,body){
   if(!r.ok){var e=await r.text().catch(function(){return ''});throw new Error('Notion '+r.status+(e?': '+e.slice(0,120):''))}
   return r.json();
 }
-async function autoConn(){try{await fetchTasks();setConn(true);flushRetryQueue()}catch(e){console.warn(e);setConn(false)}}
+async function autoConn(){try{var d=await nf('/v1/databases/'+cfg.db,'GET');if(d&&d.object==='database'){setConn(true);flushRetryQueue()}else{setConn(false)}}catch(e){console.warn('autoConn failed:',e);setConn(false)}}
 async function testConnection(){saveConfig();try{var d=await nf('/v1/databases/'+cfg.db,'GET');toast('DB: '+(d.title&&d.title[0]?d.title[0].plain_text:d.id));setConn(true)}catch(e){toast(e.message);setConn(false)}}
-function toggleConnection(){if(!connected&&cfg.db)autoConn();else switchTab('cfg')}
-function setConn(ok){connected=ok;$('connDot').className='cdot '+(ok?'ok':'off');$('connTxt').textContent=ok?'Notion verbunden':'Nicht verbunden';$('connBtn').textContent=ok?'Laden':'Verbinden';$('notionSection').style.display=ok?'':'none'}
+function toggleConnection(){if(connected){autoConn()}else if(cfg.db&&cfg.proxy){autoConn()}else{switchTab('cfg')}}
+function setConn(ok){connected=ok;$('connDot').className='cdot '+(ok?'ok':'off');$('connTxt').textContent=ok?'Notion verbunden':'Nicht verbunden';$('connBtn').textContent=ok?'Laden':'Verbinden'}
 
 /* ============================================================
    FETCH TASKS — with property trim matching
    ============================================================ */
 async function fetchTasks(){
-  $('taskList').innerHTML='<div style="padding:8px;color:var(--tx2)"><span class="spin"></span> Lade...</div>';
+  var tl=$('taskList');if(tl)tl.innerHTML='<div style="padding:8px;color:var(--tx2)"><span class="spin"></span> Lade...</div>';
   var body={page_size:C.NOTION_PS};
   if(cfg.stat&&cfg.statF){
     var statName=cfg.stat;
@@ -330,7 +330,7 @@ function parsePage(pg){
   return{pageId:pg.id,name:name,est:est,actual:actual};
 }
 function renderTaskList(){
-  var l=$('taskList');var ids=new Set(timers.map(function(t){return t.pageId}));
+  var l=$('taskList');if(!l)return;var ids=new Set(timers.map(function(t){return t.pageId}));
   var av=notionTasks.filter(function(t){return !ids.has(t.pageId)});
   if(!av.length){l.innerHTML='<div style="padding:8px;font-size:12px;color:var(--tx2)">'+(notionTasks.length?'Alle Tasks laufen':'Keine Tasks')+'</div>';return}
   l.innerHTML=av.map(function(t){
@@ -577,7 +577,7 @@ function renderNotionTable(rows){
 }
 
 function startFromTable(pageId,name,est){
-  mkTimer(name,est*60||0,pageId);
+  mkTimer(name,est||0,pageId);
   switchTab('timer');
 }
 
