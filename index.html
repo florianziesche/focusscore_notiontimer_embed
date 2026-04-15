@@ -24,6 +24,9 @@
 .xp-pop{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);font-size:22px;font-weight:700;pointer-events:none;opacity:0;z-index:100;animation:xpAni 1.2s ease forwards}@keyframes xpAni{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}60%{opacity:1;transform:translate(-50%,-70%) scale(1)}100%{opacity:0;transform:translate(-50%,-90%) scale(.9)}}@keyframes fadeIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}.spin{display:inline-block;width:12px;height:12px;border:2px solid var(--tx3);border-top-color:var(--blue);border-radius:50%;animation:sp .6s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
 .music-bar{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--bg2);border-radius:var(--r);margin-bottom:12px;font-size:12px;color:var(--tx2)}.music-bar .bi{width:24px;height:24px;font-size:12px}.music-label{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px}.music-player{overflow:hidden;border-radius:var(--r);margin-bottom:12px;transition:max-height .3s ease}.music-player.collapsed{max-height:0;margin:0}.music-player.expanded{max-height:200px}.music-player iframe{width:100%;height:180px;border:none;border-radius:var(--r)}
 .retry-bar{display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--orange-bg);color:var(--orange);border-radius:var(--r);margin-bottom:8px;font-size:11px;font-weight:500}.retry-bar .btn-sm{margin-left:auto}
+.ntbl-wrap{overflow-x:auto;margin-bottom:14px}.ntbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.ntbl th{text-align:left;font-weight:500;font-size:10px;color:var(--tx2);padding:4px 8px;border-bottom:1px solid var(--dv);white-space:nowrap}.ntbl td{padding:4px 8px;border-bottom:1px solid var(--dv);vertical-align:middle;cursor:default}.ntbl tr:hover{background:var(--bg2)}.ntbl .editable:hover{background:var(--blue-bg);cursor:pointer;border-radius:2px}.ntbl .editing{padding:0}.ntbl .editing input,.ntbl .editing select{width:100%;padding:4px 6px;border:1px solid var(--blue);border-radius:2px;font-size:12px;font-family:var(--font);background:var(--bg);color:var(--tx);outline:none}
+.status-pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:500}.sp-ns{background:var(--tag);color:var(--tx2)}.sp-ip{background:var(--blue-bg);color:var(--blue)}.sp-dn{background:var(--green-bg);color:var(--green)}
+.add-task-row{display:flex;gap:6px;margin-top:8px;align-items:center}.add-task-row .inp{flex:1;font-size:12px;padding:4px 8px}
 </style>
 </head>
 <body>
@@ -31,7 +34,7 @@
 <div class="hdr"><div class="hdr-l">
 <svg class="logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" stroke="var(--tx)" stroke-width="2" stroke-opacity="0.15"/><circle cx="16" cy="16" r="14" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="26.4" transform="rotate(-90 16 16)"/><circle cx="16" cy="16" r="5" stroke="var(--tx)" stroke-width="1.5" fill="none" stroke-opacity="0.2"/><circle cx="16" cy="16" r="2" fill="var(--blue)"/><line x1="16" y1="1" x2="16" y2="4" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.3"/><line x1="16" y1="28" x2="16" y2="31" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.3"/><line x1="1" y1="16" x2="4" y2="16" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.3"/><line x1="28" y1="16" x2="31" y2="16" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.3"/></svg>
 <h1>Focus Score</h1><span class="badge b-xp" id="xpBadge">0 XP</span><span class="badge b-st" id="streakBadge" style="display:none"></span></div></div>
-<div class="tabs"><div class="tab on" onclick="switchTab('timer')">Timer</div><div class="tab" onclick="switchTab('stats')">Statistik</div><div class="tab" onclick="switchTab('cfg')">Einstellungen</div></div>
+<div class="tabs"><div class="tab on" onclick="switchTab('timer')">Timer</div><div class="tab" onclick="switchTab('table')">Tabelle</div><div class="tab" onclick="switchTab('stats')">Statistik</div><div class="tab" onclick="switchTab('cfg')">Einstellungen</div></div>
 
 <!-- TIMER -->
 <div class="pnl on" id="pnl-timer">
@@ -45,24 +48,34 @@
 <div id="activeSection" style="display:none"><div class="tshdr"><span class="stit" id="activeCount">Aktiv (0)</span></div><div class="atimers" id="activeTimers"></div></div>
 <div id="resultArea"></div></div>
 
+<!-- TABLE VIEW -->
+<div class="pnl" id="pnl-table">
+<div class="tshdr"><span class="stit">Notion Datenbank</span><button class="btn btn-sm btn-s" onclick="fetchTableData()">&#8635; Aktualisieren</button></div>
+<div class="ntbl-wrap"><table class="ntbl" id="notionTable"><thead><tr><th style="width:30%">Task</th><th style="width:18%">Status</th><th style="width:13%">Est.</th><th style="width:13%">Actual</th><th style="width:26%">Beschreibung</th></tr></thead><tbody id="notionTableBody"></tbody></table></div>
+<div class="add-task-row"><input class="inp" id="newTaskName" placeholder="Neue Aufgabe..."/><input class="inp" id="newTaskEst" type="number" placeholder="min" style="width:60px"/><button class="btn btn-sm btn-p" onclick="createTask()">+ Task</button></div>
+<div class="empty" id="tableEmpty">Verbinde Notion um die Tabelle zu laden</div>
+</div>
+
 <!-- STATS -->
 <div class="pnl" id="pnl-stats"><div class="sgrid"><div class="sc"><div class="sv" id="statSessions">0</div><div class="sl">Sessions</div></div><div class="sc"><div class="sv" id="statMinutes">0</div><div class="sl">Minuten</div></div><div class="sc"><div class="sv" id="statAccuracy">&ndash;</div><div class="sl">Genauigkeit</div></div><div class="sc"><div class="sv" id="statStreak">0</div><div class="sl">Streak</div></div></div><div class="abw"><div class="abh"><span>Sch&auml;tz-Genauigkeit</span><span id="accuracyPercent">&ndash;</span></div><div class="ab"><div class="af" id="accuracyFill" style="width:0"></div></div></div><div class="stit">Verlauf</div><table class="ht"><thead><tr><th>Aufgabe</th><th>Gesch.</th><th>Tats.</th><th>&Delta;</th><th>XP</th></tr></thead><tbody id="historyBody"></tbody></table><div class="empty" id="historyEmpty">Noch keine Sessions</div></div>
 
 <!-- SETTINGS -->
 <div class="pnl" id="pnl-cfg">
-<div class="sg"><label>Hosting-Modus</label><select class="inp" id="cfgMode" onchange="toggleProxyField()"><option value="vercel">Vercel (Proxy eingebaut)</option><option value="custom">Eigener Proxy</option></select></div>
-<div class="sg" id="proxyField" style="display:none"><label>Proxy URL</label><input class="inp" id="cfgProxy" placeholder="https://focus-proxy.xxx.workers.dev"/></div>
-<div class="sg"><label>Notion API Key</label><input class="inp" id="cfgKey" type="password" placeholder="secret_... (oder auf Server als ENV)"/><div class="note">Wenn NOTION_API_KEY auf dem Server gesetzt ist, kann dieses Feld leer bleiben.</div></div>
-<div class="sg"><label>Datenbank-URL oder ID</label><input class="inp" id="cfgDb" placeholder="https://notion.so/... oder ID"/></div>
+<div class="stit" style="margin-bottom:8px">Verbindung</div>
+<div class="sg"><label>Hosting-Modus</label><select class="inp" id="cfgMode" onchange="toggleProxyField()"><option value="vercel">Vercel (Proxy eingebaut)</option><option value="custom" selected>Eigener Proxy (Cloudflare Worker)</option></select><div class="note">Bestimmt wohin API-Requests gehen. Vercel: relativer Pfad /api/notion. Eigener Proxy: externe URL zum Cloudflare Worker. Falscher Modus = Requests laufen ins Leere.</div></div>
+<div class="sg" id="proxyField"><label>Proxy URL</label><input class="inp" id="cfgProxy" value="https://focus-proxy.florian-af3.workers.dev"/><div class="note">URL deines Cloudflare Workers. Der Proxy leitet Requests an api.notion.com weiter und f&uuml;gt CORS-Header hinzu. Notion blockiert direkte Browser-Requests &mdash; ohne Proxy keine Verbindung.</div></div>
+<div class="sg"><label>Notion API Key</label><input class="inp" id="cfgKey" type="password" placeholder="Leer lassen (Key ist auf dem Server)"/><div class="note">Nur n&ouml;tig wenn der Key NICHT als NOTION_TOKEN Secret auf dem Cloudflare Worker gesetzt ist. Empfehlung: Key auf dem Server lassen &mdash; so erreicht er nie den Browser und kann nicht ausgelesen werden.</div></div>
+<div class="sg"><label>Datenbank-URL oder ID</label><input class="inp" id="cfgDb" value="343d7e5e-c2c6-80ac-bf16-c079c5e654a6"/><div class="note">Die Notion-Datenbank die deine Tasks enth&auml;lt. Akzeptiert volle Notion-URLs oder die 32-Zeichen Hex-ID. Das Widget extrahiert die ID automatisch aus jeder URL-Variante.</div></div>
 <hr class="sep">
-<div class="stit" style="margin-bottom:8px">Property-Mapping <span style="font-weight:400;text-transform:none">(auto-detected beim Verbinden)</span></div>
-<div class="sgr"><div class="sg"><label>Sch&auml;tzung (Minuten)</label><select class="inp" id="cfgEstProp"><option value="">-- w&auml;hlen --</option></select></div>
-<div class="sg"><label>Tats&auml;chlich (Minuten)</label><select class="inp" id="cfgActProp"><option value="">-- w&auml;hlen --</option></select></div></div>
-<div class="sgr"><div class="sg"><label>Status-Property (optional)</label><select class="inp" id="cfgStatusProp"><option value="">-- keine --</option></select></div>
-<div class="sg"><label>Status-Filter (optional)</label><input class="inp" id="cfgStatusFilter" placeholder="Not started, In progress"/></div></div>
+<div class="stit" style="margin-bottom:8px">Property-Mapping</div>
+<div class="note" style="margin-bottom:10px">Verbindet Widget-Felder mit Notion-Properties. Klicke &quot;Schema erkennen&quot; um die Dropdowns automatisch zu bef&uuml;llen, oder w&auml;hle manuell.</div>
+<div class="sgr"><div class="sg"><label>Sch&auml;tzung (Minuten)</label><select class="inp" id="cfgEstProp"><option value="">-- w&auml;hlen --</option><option value="Est. Time" selected>Est. Time (number)</option></select><div class="note">Notion-Property mit der gesch&auml;tzten Zeit in Minuten. Wird gelesen um den Countdown zu starten und die Genauigkeit zu berechnen. Ohne: kein Countdown, nur Stoppuhr.</div></div>
+<div class="sg"><label>Tats&auml;chlich (Minuten)</label><select class="inp" id="cfgActProp"><option value="">-- w&auml;hlen --</option><option value="Actual Time" selected>Actual Time (number)</option></select><div class="note">Notion-Property wohin die tats&auml;chliche Zeit geschrieben wird. Nach Timer-Stop schreibt das Widget Math.round(elapsed/60) als Zahl in dieses Feld. Ohne: kein Write-back zu Notion.</div></div></div>
+<div class="sgr"><div class="sg"><label>Status-Property</label><select class="inp" id="cfgStatusProp"><option value="">-- alle Tasks laden --</option><option value="Status " selected>Status (status)</option></select><div class="note">Filtert Tasks nach Status. Wenn gesetzt, werden nur Tasks mit den unten angegebenen Status-Werten geladen. Ohne: alle Tasks der Datenbank werden angezeigt (auch erledigte).</div></div>
+<div class="sg"><label>Status-Filter</label><input class="inp" id="cfgStatusFilter" value="Not started, In progress"/><div class="note">Komma-getrennte Liste von Status-Werten. Nur Tasks mit diesen Werten erscheinen in der Task-Liste. Muss exakt mit den Notion-Status-Optionen &uuml;bereinstimmen.</div></div></div>
 <hr class="sep">
 <div class="stit" style="margin-bottom:8px">Focus Music</div>
-<div class="sg"><label>YouTube URL</label><input class="inp" id="cfgMusicUrl" placeholder="https://www.youtube.com/watch?v=..."/></div>
+<div class="sg"><label>YouTube URL</label><input class="inp" id="cfgMusicUrl" value="https://www.youtube.com/watch?v=bMEUAVOOAls&amp;list=RDbMEUAVOOAls&amp;start_radio=1"/><div class="note">YouTube-Video oder Playlist f&uuml;r Focus-Musik. Wird als eingebetteter Player im Timer-Tab angezeigt. Nutzt youtube-nocookie.com f&uuml;r Datenschutz. Leer lassen = kein Musik-Player.</div></div>
 <hr class="sep">
 <div class="btnrow"><button class="btn btn-p" onclick="saveConfig()">Speichern &amp; Verbinden</button><button class="btn btn-s" onclick="detectSchema()">Schema erkennen</button></div>
 <hr class="sep">
@@ -121,16 +134,15 @@ renderHist();
 initMusic();
 restoreTimers();
 updRetryBar();
-if(cfg.key&&cfg.db) autoConn();
-else if(cfg.db) autoConn();
-if('Notification' in window && Notification.permission==='default'){
-  /* defer permission request until first timer start */
+if(cfg.db){
+  if(!cfg.schema) detectSchema().then(function(){autoConn()});
+  else autoConn();
 }
 
 /* ============================================================
    TABS
    ============================================================ */
-function switchTab(t){var n=['timer','stats','cfg'];document.querySelectorAll('.tab').forEach(function(e,i){e.classList.toggle('on',n[i]===t)});document.querySelectorAll('.pnl').forEach(function(p){p.classList.toggle('on',p.id==='pnl-'+t)});if(t==='stats'){updStats();renderHist()}}
+function switchTab(t){var n=['timer','table','stats','cfg'];document.querySelectorAll('.tab').forEach(function(e,i){e.classList.toggle('on',n[i]===t)});document.querySelectorAll('.pnl').forEach(function(p){p.classList.toggle('on',p.id==='pnl-'+t)});if(t==='stats'){updStats();renderHist()}if(t==='table'&&connected){fetchTableData()}}
 function popEst(){$('manualEst').innerHTML='<option value="0">-- min</option>'+C.PRESETS.map(function(m){return '<option value="'+m+'">'+m+' min</option>'}).join('')}
 
 /* ============================================================
@@ -331,6 +343,7 @@ function mkTimer(name,estMin,pageId){
   timers.push(t);
   persistTimers();
   renderActive();
+  setNotionStatus(pageId,'In progress');
 }
 function getElapsed(t){return t.state==='paused'?t.pausedElapsed:t.pausedElapsed+Math.floor((Date.now()-t.startedAt)/1000)}
 function updDisp(id){
@@ -375,6 +388,7 @@ async function finishTimer(id){
       if(nt)nt.actual=mins;
     }
   }
+  setNotionStatus(t.pageId,'Done');
 
   timers=timers.filter(function(x){return x.id!==id});
   persistTimers();renderActive();renderTaskList();
@@ -461,6 +475,141 @@ function initMusic(){var p=parseYT(cfg.musicUrl);$('musicBar').style.display=p?'
 function toggleMusicPlayer(){musicVis=!musicVis;$('musicExpandBtn').innerHTML=musicVis?'&#9650;':'&#9660;';if(musicVis){$('musicPlayer').className='music-player expanded';if(!musicOk)loadYT()}else $('musicPlayer').className='music-player collapsed'}
 function toggleMusic(){if(!musicOk){musicVis=true;$('musicPlayer').className='music-player expanded';$('musicExpandBtn').innerHTML='&#9650;';loadYT()}}
 function loadYT(){var p=parseYT(cfg.musicUrl);if(!p)return;var src=C.YT_BASE+p.vid+'?'+C.YT_PARAMS;if(p.list)src+='&list='+p.list;$('musicPlayer').innerHTML='<iframe src="'+esc(src)+'" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe>';musicOk=true}
+
+/* ============================================================
+   TABLE VIEW — read, edit, create
+   ============================================================ */
+async function fetchTableData(){
+  var tbody=$('notionTableBody');
+  tbody.innerHTML='<tr><td colspan="5" style="padding:12px;color:var(--tx2)"><span class="spin"></span> Lade Tabelle...</td></tr>';
+  $('tableEmpty').style.display='none';
+  try{
+    var body={page_size:C.NOTION_PS};
+    var data=await nf('/v1/databases/'+cfg.db+'/query','POST',body);
+    var rows=data.results.map(parseFullPage);
+    renderNotionTable(rows);
+  }catch(e){
+    tbody.innerHTML='';
+    $('tableEmpty').textContent='Fehler: '+e.message;
+    $('tableEmpty').style.display='';
+  }
+}
+
+function parseFullPage(pg){
+  var tp=Object.values(pg.properties).find(function(p){return p.type==='title'});
+  var name=tp&&tp.title?tp.title.map(function(t){return t.plain_text}).join(''):'';
+  var est=0;var estProp=matchProp(pg.properties,cfg.est);
+  if(estProp&&estProp.type==='number')est=estProp.number||0;
+  var actual=null;var actProp=matchProp(pg.properties,cfg.act);
+  if(actProp&&actProp.type==='number')actual=actProp.number;
+  var status='';var statProp=matchProp(pg.properties,cfg.stat);
+  if(statProp&&statProp.type==='status'&&statProp.status)status=statProp.status.name||'';
+  var desc='';var descProp=pg.properties['Description'];
+  if(descProp&&descProp.type==='rich_text')desc=descProp.rich_text?descProp.rich_text.map(function(t){return t.plain_text}).join(''):'';
+  return{pageId:pg.id,name:name,status:status,est:est,actual:actual,desc:desc};
+}
+
+function renderNotionTable(rows){
+  var tbody=$('notionTableBody');
+  if(!rows.length){tbody.innerHTML='';$('tableEmpty').style.display='';$('tableEmpty').textContent='Keine Tasks gefunden';return}
+  $('tableEmpty').style.display='none';
+  tbody.innerHTML=rows.map(function(r){
+    var sc=r.status==='In progress'?'sp-ip':r.status==='Done'?'sp-dn':'sp-ns';
+    return '<tr data-pid="'+r.pageId+'">'+
+      '<td class="editable" onclick="editCell(this,\''+r.pageId+'\',\'title\')">'+esc(r.name)+'</td>'+
+      '<td class="editable" onclick="editStatus(this,\''+r.pageId+'\')"><span class="status-pill '+sc+'">'+esc(r.status||'--')+'</span></td>'+
+      '<td class="editable" onclick="editCell(this,\''+r.pageId+'\',\'number\',\'est\')">'+( r.est||'--')+'</td>'+
+      '<td class="editable" onclick="editCell(this,\''+r.pageId+'\',\'number\',\'act\')">'+(r.actual!=null?r.actual:'--')+'</td>'+
+      '<td class="editable" onclick="editCell(this,\''+r.pageId+'\',\'text\',\'desc\')">'+esc(r.desc||'--')+'</td>'+
+    '</tr>';
+  }).join('');
+}
+
+/* Inline cell editing */
+function editCell(td,pageId,type,field){
+  if(td.classList.contains('editing'))return;
+  var oldVal=td.textContent==='--'?'':td.textContent;
+  td.classList.add('editing');
+  var inp=document.createElement('input');
+  if(type==='number'){inp.type='number';inp.value=oldVal?parseFloat(oldVal):'';}
+  else{inp.type='text';inp.value=oldVal;}
+  td.innerHTML='';td.appendChild(inp);inp.focus();inp.select();
+  function save(){
+    td.classList.remove('editing');
+    var newVal=inp.value.trim();
+    if(type==='number')newVal=newVal?parseFloat(newVal):null;
+    if(type==='title'){
+      td.textContent=newVal||'--';
+      savePropToNotion(pageId,{title:[{text:{content:newVal||''}}]},cfg.est?null:null,'Task');
+    }else if(field==='est'){
+      td.textContent=newVal!=null?newVal:'--';
+      savePropToNotion(pageId,{number:newVal},'est');
+    }else if(field==='act'){
+      td.textContent=newVal!=null?newVal:'--';
+      savePropToNotion(pageId,{number:newVal},'act');
+    }else if(field==='desc'){
+      td.textContent=newVal||'--';
+      savePropToNotion(pageId,{rich_text:[{text:{content:newVal||''}}]},'desc');
+    }
+  }
+  inp.addEventListener('blur',save);
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')inp.blur();if(e.key==='Escape'){td.classList.remove('editing');td.textContent=oldVal||'--';}});
+}
+
+function editStatus(td,pageId){
+  if(td.classList.contains('editing'))return;
+  var oldVal=td.textContent==='--'?'':td.textContent.trim();
+  td.classList.add('editing');
+  var sel=document.createElement('select');
+  var opts=['Not started','In progress','Done'];
+  sel.innerHTML=opts.map(function(o){return '<option value="'+o+'"'+(o===oldVal?' selected':'')+'>'+o+'</option>'}).join('');
+  td.innerHTML='';td.appendChild(sel);sel.focus();
+  function save(){
+    td.classList.remove('editing');
+    var nv=sel.value;
+    var sc=nv==='In progress'?'sp-ip':nv==='Done'?'sp-dn':'sp-ns';
+    td.innerHTML='<span class="status-pill '+sc+'">'+esc(nv)+'</span>';
+    savePropToNotion(pageId,{status:{name:nv}},'stat');
+  }
+  sel.addEventListener('blur',save);
+  sel.addEventListener('change',function(){sel.blur()});
+}
+
+async function savePropToNotion(pageId,value,field,propNameOverride){
+  var propName=propNameOverride||
+    (field==='est'?cfg.est:field==='act'?cfg.act:field==='stat'?cfg.stat:field==='desc'?'Description':'Task');
+  try{
+    await nf('/v1/pages/'+pageId,'PATCH',{properties:{[propName]:value}});
+  }catch(e){
+    toast('Speichern fehlgeschlagen: '+e.message);
+    console.warn('Save failed:',e);
+  }
+}
+
+/* Create new task */
+async function createTask(){
+  var name=$('newTaskName').value.trim();
+  if(!name){toast('Task-Name eingeben');return}
+  var est=parseInt($('newTaskEst').value)||null;
+  try{
+    var body={parent:{database_id:cfg.db},properties:{Task:{title:[{text:{content:name}}]}}};
+    if(est&&cfg.est)body.properties[cfg.est]={number:est};
+    await nf('/v1/pages/','POST',body);
+    toast('Task erstellt: '+name);
+    $('newTaskName').value='';$('newTaskEst').value='';
+    fetchTableData();fetchTasks();
+  }catch(e){toast('Fehler: '+e.message)}
+}
+
+/* ============================================================
+   AUTO-STATUS — update Notion status on timer start/finish
+   ============================================================ */
+async function setNotionStatus(pageId,statusName){
+  if(!pageId||!cfg.stat)return;
+  try{
+    await nf('/v1/pages/'+pageId,'PATCH',{properties:{[cfg.stat]:{status:{name:statusName}}}});
+  }catch(e){console.warn('Status update failed:',e)}
+}
 
 /* ============================================================
    RESULTS & XP
