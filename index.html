@@ -17,7 +17,7 @@
 .atimers{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}.tcard{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);transition:.15s}.tcard.tw{border-color:var(--orange)}.tcard.td{border-color:var(--red)}.tcr{position:relative;width:50px;height:50px;flex-shrink:0}.tcr svg{width:50px;height:50px;transform:rotate(-90deg)}.tcr .rb{fill:none;stroke:var(--tag);stroke-width:4}.tcr .rp{fill:none;stroke:var(--blue);stroke-width:4;stroke-linecap:round;transition:stroke-dashoffset .5s,stroke .3s}.tcr .rp.w{stroke:var(--orange)}.tcr .rp.d{stroke:var(--red)}.tcd{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}.tci{flex:1;min-width:0}.tcn{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tcm{font-size:11px;color:var(--tx2);margin-top:1px}.tcc{display:flex;gap:4px;flex-shrink:0}
 .arow{display:flex;gap:6px;margin-bottom:14px;align-items:center}.arow .inp{flex:1}
 .rbanner{padding:10px 12px;border-radius:var(--r);font-size:13px;margin-bottom:12px;animation:fadeIn .2s}.rbanner.ok{background:var(--green-bg);color:var(--green)}.rbanner.bad{background:var(--red-bg);color:var(--red)}.rbanner .rbt{font-weight:600;margin-bottom:1px}
-.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--dv);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:14px}.sc{background:var(--bg);padding:10px 8px;text-align:center}.sv{font-size:18px;font-weight:600;line-height:1.2}.sl{font-size:10px;color:var(--tx2);margin-top:2px}.abw{margin-bottom:14px}.abh{display:flex;justify-content:space-between;font-size:11px;color:var(--tx2);margin-bottom:4px}.ab{height:5px;background:var(--tag);border-radius:3px;overflow:hidden}.af{height:100%;border-radius:3px;transition:width .4s}
+.sgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--dv);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-bottom:14px}.sc{background:var(--bg);padding:10px 8px;text-align:center}.sv{font-size:18px;font-weight:600;line-height:1.2}.sl{font-size:10px;color:var(--tx2);margin-top:2px}.abw{margin-bottom:14px}.abh{display:flex;justify-content:space-between;font-size:11px;color:var(--tx2);margin-bottom:4px}.ab{height:5px;background:var(--tag);border-radius:3px;overflow:hidden}.af{height:100%;border-radius:3px;transition:width .4s}
 .ht{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}.ht th{text-align:left;font-weight:500;font-size:10px;color:var(--tx2);padding:3px 6px;border-bottom:1px solid var(--dv)}.ht td{padding:5px 6px;border-bottom:1px solid var(--dv)}.ht tr:last-child td{border:none}.dt{display:inline-block;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:500}.dt.u{background:var(--green-bg);color:var(--green)}.dt.o{background:var(--red-bg);color:var(--red)}.dt.e{background:var(--blue-bg);color:var(--blue)}.empty{text-align:center;padding:24px;color:var(--tx3);font-size:13px}
 .sg{margin-bottom:14px}.sg label{display:block;font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:3px}.sg .note{font-size:10px;color:var(--tx3);margin-top:3px;line-height:1.4}.sg .inp{width:100%}.sgr{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 #pnl-cfg{max-width:640px}#pnl-stats{max-width:640px}.link{color:var(--blue);text-decoration:none;font-size:12px}.link:hover{text-decoration:underline}.sep{border:none;border-top:1px solid var(--dv);margin:14px 0}.btnrow{display:flex;gap:6px;flex-wrap:wrap}
@@ -65,7 +65,7 @@
 </div>
 
 <!-- STATS -->
-<div class="pnl" id="pnl-stats"><div class="sgrid"><div class="sc"><div class="sv" id="statSessions">0</div><div class="sl">Sessions</div></div><div class="sc"><div class="sv" id="statMinutes">0</div><div class="sl">Minuten</div></div><div class="sc"><div class="sv" id="statAccuracy">&ndash;</div><div class="sl">Genauigkeit</div></div><div class="sc"><div class="sv" id="statStreak">0</div><div class="sl">Streak</div></div></div><div class="abw"><div class="abh"><span>Sch&auml;tz-Genauigkeit</span><span id="accuracyPercent">&ndash;</span></div><div class="ab"><div class="af" id="accuracyFill" style="width:0"></div></div></div><div class="stit">Verlauf</div><table class="ht"><thead><tr><th>Aufgabe</th><th>Gesch.</th><th>Tats.</th><th>&Delta;</th><th>XP</th></tr></thead><tbody id="historyBody"></tbody></table><div class="empty" id="historyEmpty">Noch keine Sessions</div></div>
+<div class="pnl" id="pnl-stats"><div class="sgrid"><div class="sc"><div class="sv" id="statSessions">0</div><div class="sl">Sessions</div></div><div class="sc"><div class="sv" id="statMinutes">0</div><div class="sl">Minuten</div></div><div class="sc"><div class="sv" id="statAccuracy">&ndash;</div><div class="sl">Genauigkeit</div></div><div class="sc"><div class="sv" id="statStreak">0</div><div class="sl">Streak</div></div><div class="sc"><div class="sv" id="statBias">&ndash;</div><div class="sl">Bias-Faktor</div></div></div><div id="biasInsight" style="display:none;padding:8px 10px;border-radius:var(--r);margin-bottom:12px;font-size:11px;line-height:1.5"></div><div class="abw"><div class="abh"><span>Sch&auml;tz-Genauigkeit</span><span id="accuracyPercent">&ndash;</span></div><div class="ab"><div class="af" id="accuracyFill" style="width:0"></div></div></div><div class="stit">Verlauf</div><table class="ht"><thead><tr><th>Aufgabe</th><th>Gesch.</th><th>Tats.</th><th>&Delta;</th><th>XP</th></tr></thead><tbody id="historyBody"></tbody></table><div class="empty" id="historyEmpty">Noch keine Sessions</div></div>
 
 <!-- SETTINGS -->
 <div class="pnl" id="pnl-cfg">
@@ -102,6 +102,7 @@ var C = {
   STREAK_PCT:20, STREAK_MIN:2,
   RING_R:20, RING_C:2*Math.PI*20,
   ACC_GOOD:70, ACC_MID:40,
+  BIAS_MIN_N:10, BIAS_CAP:3.0, BIAS_TRIM:0.1, BIAS_GOOD_LO:0.85, BIAS_GOOD_HI:1.15,
   MAX_SESS:50, MAX_HIST:20, NOTION_PS:50, NOTION_V:'2022-06-28',
   TOAST_MS:3000, RESULT_MS:6000, XP_MS:1500, UNDO_MS:5000,
   PFX:'fs6_',
@@ -675,7 +676,61 @@ function showXP(xp,good){var e=document.createElement('div');e.className='xp-pop
 /* ============================================================
    STATS
    ============================================================ */
-function updStats(){$('statSessions').textContent=sessions.length;$('statMinutes').textContent=Math.round(sessions.reduce(function(a,s){return a+s.actual},0)/60);$('statStreak').textContent=streak;if(sessions.length){var avg=sessions.reduce(function(a,s){return a+Math.abs(s.deltaPct)},0)/sessions.length;var acc=Math.max(0,100-avg);$('statAccuracy').textContent=Math.round(acc)+'%';$('accuracyPercent').textContent=Math.round(acc)+'%';$('accuracyFill').style.width=acc+'%';$('accuracyFill').style.background=acc>=C.ACC_GOOD?'var(--green)':acc>=C.ACC_MID?'var(--orange)':'var(--red)'}}
+/* ============================================================
+   BIAS CALIBRATION (Level 1) — retrospective estimation analysis
+   ============================================================ */
+function calcBias(){
+  var estimated=sessions.filter(function(s){return s.estimate>0&&s.actual>0});
+  if(estimated.length<C.BIAS_MIN_N) return{ready:false,n:estimated.length,needed:C.BIAS_MIN_N};
+  var ratios=estimated.map(function(s){return Math.min(s.actual/s.estimate,C.BIAS_CAP)});
+  var sorted=ratios.slice().sort(function(a,b){return a-b});
+  var trimN=Math.floor(sorted.length*C.BIAS_TRIM);
+  var trimmed=trimN>0?sorted.slice(trimN,-trimN):sorted;
+  var mean=trimmed.reduce(function(a,v){return a+v},0)/trimmed.length;
+  var recent=ratios.slice(-20);
+  return{ready:true,factor:Math.round(mean*100)/100,n:estimated.length,ratios:recent};
+}
+
+function renderSparkline(ratios,w,h){
+  if(!ratios||ratios.length<2) return '';
+  var mn=Math.min.apply(null,ratios),mx=Math.max.apply(null,ratios);
+  if(mx===mn){mx=mn+0.1}
+  var pts=ratios.map(function(r,i){
+    var x=Math.round(i/(ratios.length-1)*w);
+    var y=Math.round((1-(r-mn)/(mx-mn))*(h-4))+2;
+    return x+','+y;
+  }).join(' ');
+  var last=ratios[ratios.length-1],lastX=w,lastY=Math.round((1-(last-mn)/(mx-mn))*(h-4))+2;
+  return '<svg width="'+w+'" height="'+h+'" style="display:block;margin:4px auto 0"><polyline points="'+pts+'" fill="none" stroke="var(--blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="0" y1="'+Math.round((1-(1.0-mn)/(mx-mn))*(h-4)+2)+'" x2="'+w+'" y2="'+Math.round((1-(1.0-mn)/(mx-mn))*(h-4)+2)+'" stroke="var(--tx3)" stroke-width="0.5" stroke-dasharray="2,2"/><circle cx="'+lastX+'" cy="'+lastY+'" r="2" fill="var(--blue)"/></svg>';
+}
+
+function updStats(){$('statSessions').textContent=sessions.length;$('statMinutes').textContent=Math.round(sessions.reduce(function(a,s){return a+s.actual},0)/60);$('statStreak').textContent=streak;if(sessions.length){var avg=sessions.reduce(function(a,s){return a+Math.abs(s.deltaPct)},0)/sessions.length;var acc=Math.max(0,100-avg);$('statAccuracy').textContent=Math.round(acc)+'%';$('accuracyPercent').textContent=Math.round(acc)+'%';$('accuracyFill').style.width=acc+'%';$('accuracyFill').style.background=acc>=C.ACC_GOOD?'var(--green)':acc>=C.ACC_MID?'var(--orange)':'var(--red)'}
+  var bias=calcBias();
+  var biasEl=$('statBias');
+  var insightEl=$('biasInsight');
+  if(!bias.ready){
+    biasEl.innerHTML='<span style="font-size:11px;color:var(--tx3)">'+bias.n+'/'+bias.needed+'</span>';
+    insightEl.style.display='none';
+  } else {
+    var f=bias.factor;
+    biasEl.innerHTML=f.toFixed(2)+'x'+renderSparkline(bias.ratios,50,20);
+    if(f>=C.BIAS_GOOD_LO&&f<=C.BIAS_GOOD_HI){
+      insightEl.style.display='';
+      insightEl.style.background='var(--green-bg)';insightEl.style.color='var(--green)';
+      insightEl.innerHTML='<b>Gut kalibriert.</b> Dein Bias-Faktor von '+f.toFixed(2)+'x zeigt: deine Schaetzungen treffen die Realitaet gut. (Basiert auf '+bias.n+' Sessions mit Schaetzung)';
+    } else if(f>C.BIAS_GOOD_HI){
+      var overPct=Math.round((f-1)*100);
+      insightEl.style.display='';
+      insightEl.style.background='var(--orange-bg)';insightEl.style.color='var(--orange)';
+      insightEl.innerHTML='<b>Du unterschaetzt um ~'+overPct+'%.</b> Deine letzten '+bias.n+' Sessions zeigen: Aufgaben brauchen im Schnitt '+f.toFixed(2)+'x der geschaetzten Zeit. (Trimmed Mean, Ausreisser >3x gekappt)';
+    } else {
+      var underPct=Math.round((1-f)*100);
+      insightEl.style.display='';
+      insightEl.style.background='var(--blue-bg)';insightEl.style.color='var(--blue)';
+      insightEl.innerHTML='<b>Du ueberschaetzt um ~'+underPct+'%.</b> Deine letzten '+bias.n+' Sessions zeigen: Aufgaben brauchen im Schnitt '+f.toFixed(2)+'x der geschaetzten Zeit — du bist schneller als gedacht.';
+    }
+  }
+}
 function renderHist(){var b=$('historyBody'),e=$('historyEmpty');if(!sessions.length){b.innerHTML='';e.style.display='';return}e.style.display='none';b.innerHTML=sessions.slice(0,C.MAX_HIST).map(function(s){var ap=Math.abs(s.deltaPct),cl=ap<=5?'e':(s.delta<=0?'u':'o'),sg=s.delta>0?'+':s.delta<0?'-':'';return '<tr><td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(s.task)+'</td><td>'+fmt(s.estimate)+'</td><td>'+fmt(s.actual)+'</td><td><span class="dt '+cl+'">'+sg+fmt(Math.abs(s.delta))+'</span></td><td style="color:var(--tx2);font-size:11px">+'+s.xp+'</td></tr>'}).join('')}
 function updBadge(){$('xpBadge').textContent=totalXP+' XP';if(streak>=C.STREAK_MIN){$('streakBadge').style.display='';$('streakBadge').textContent='\uD83D\uDD25 '+streak}else $('streakBadge').style.display='none'}
 function clearAllData(){if(!confirm('Alle Daten loeschen?'))return;sessions=[];totalXP=0;streak=0;retryQueue=[];timers.forEach(function(t){clearInterval(t.iv)});timers=[];['sess','xp','str','retry','timers','cfg'].forEach(function(k){localStorage.removeItem(C.PFX+k)});cfg={};persistTimers();updBadge();updStats();renderHist();updRetryBar();renderActive()}
