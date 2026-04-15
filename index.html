@@ -98,7 +98,7 @@ var C = {
 var sessions=loadJ(C.PFX+'sess')||[];
 var totalXP=+(localStorage.getItem(C.PFX+'xp')||0);
 var streak=+(localStorage.getItem(C.PFX+'str')||0);
-var cfg=loadJ(C.PFX+'cfg')||{};
+var cfg=loadJ(C.PFX+'cfg')||{mode:'custom',proxy:'https://focus-proxy.florian-af3.workers.dev',db:'343d7e5e-c2c6-80ac-bf16-c079c5e654a6',est:'Est. Time',act:'Actual Time',stat:'Status ',statF:'Not started, In progress',musicUrl:'https://www.youtube.com/watch?v=bMEUAVOOAls&list=RDbMEUAVOOAls&start_radio=1'};
 var retryQueue=loadJ(C.PFX+'retry')||[];
 var dbSchema=null;
 var notionTasks=[];
