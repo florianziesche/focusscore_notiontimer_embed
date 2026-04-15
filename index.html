@@ -29,6 +29,9 @@
 .ntbl-wrap{overflow-x:auto;margin-bottom:14px}.ntbl{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}.ntbl th{text-align:left;font-weight:500;font-size:10px;color:var(--tx2);padding:4px 8px;border-bottom:1px solid var(--dv);white-space:nowrap}.ntbl td{padding:4px 8px;border-bottom:1px solid var(--dv);vertical-align:middle;cursor:default}.ntbl tr:hover{background:var(--bg2)}.ntbl .editable:hover{background:var(--blue-bg);cursor:pointer;border-radius:2px}.ntbl .editing{padding:0}.ntbl .editing input,.ntbl .editing select{width:100%;padding:4px 6px;border:1px solid var(--blue);border-radius:2px;font-size:12px;font-family:var(--font);background:var(--bg);color:var(--tx);outline:none}
 .status-pill{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:500}.sp-ns{background:var(--tag);color:var(--tx2)}.sp-ip{background:var(--blue-bg);color:var(--blue)}.sp-dn{background:var(--green-bg);color:var(--green)}
 .add-task-row{display:flex;gap:6px;margin-top:8px;align-items:center}.add-task-row .inp{flex:1;font-size:12px;padding:4px 8px}
+.cl-wrap{position:relative;border:1px solid var(--bd);border-radius:6px;padding:8px;margin-bottom:12px;background:var(--bg)}.cl-tip{display:none;position:absolute;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);padding:6px 10px;font-size:11px;pointer-events:none;z-index:10;box-shadow:0 4px 12px #0002;max-width:220px;line-height:1.4}.cl-opt{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--r);font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--bd);background:var(--bg);color:var(--tx2);transition:.12s;user-select:none}.cl-opt:hover{background:var(--bg2)}.cl-opt.on{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}.cl-card{border:1px solid var(--bd);border-radius:6px;padding:10px;background:var(--bg)}.cl-card-task{font-size:11px;color:var(--tx2);padding:3px 0 3px 8px;margin-top:4px;cursor:pointer;display:flex;align-items:center;gap:4px;border-radius:2px}.cl-card-task:hover{background:var(--bg2)}.cl-play{font-size:8px;color:var(--tx3);cursor:pointer;padding:2px 4px;border-radius:3px;transition:.12s;flex-shrink:0}.cl-play:hover{color:var(--blue);background:var(--blue-bg)}
+#clModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;align-items:center;justify-content:center}#clModal.open{display:flex}#clModal .cl-dlg{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:16px;width:360px;max-width:90vw;box-shadow:0 8px 24px #0002}
+#claudeModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:300;align-items:center;justify-content:center}#claudeModal.open{display:flex}#claudeModal .cm-dlg{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:0;width:520px;max-width:95vw;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 12px 40px #0003}#claudeModal .cm-hdr{padding:14px 16px;border-bottom:1px solid var(--dv);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}#claudeModal .cm-body{padding:12px 16px;overflow-y:auto;flex:1;min-height:0}#claudeModal .cm-pre{font-family:'SF Mono',Monaco,Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;word-break:break-word;color:var(--tx);background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px;max-height:340px;overflow-y:auto}#claudeModal .cm-foot{padding:12px 16px;border-top:1px solid var(--dv);display:flex;gap:8px;flex-shrink:0;align-items:center}.cm-copied{font-size:11px;color:var(--green);font-weight:500;display:none}.cm-copied.show{display:inline}
 </style>
 </head>
 <body>
@@ -36,7 +39,7 @@
 <div class="hdr"><div class="hdr-l">
 <svg class="logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" stroke="var(--tx)" stroke-width="2" stroke-opacity="0.15"/><circle cx="16" cy="16" r="14" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="26.4" transform="rotate(-90 16 16)"/><circle cx="16" cy="16" r="5" stroke="var(--tx)" stroke-width="1.5" fill="none" stroke-opacity="0.2"/><circle cx="16" cy="16" r="2" fill="var(--blue)"/><line x1="16" y1="1" x2="16" y2="4" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.3"/><line x1="16" y1="28" x2="16" y2="31" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.3"/><line x1="1" y1="16" x2="4" y2="16" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.3"/><line x1="28" y1="16" x2="31" y2="16" stroke="var(--tx)" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.3"/></svg>
 <h1>Focus Score</h1><span class="badge b-xp" id="xpBadge">0 XP</span><span class="badge b-st" id="streakBadge" style="display:none"></span></div></div>
-<div class="tabs"><div class="tab on" onclick="switchTab('timer')">Timer</div><div class="tab" onclick="switchTab('table')">Tabelle</div><div class="tab" onclick="switchTab('stats')">Statistik</div><div class="tab" onclick="switchTab('cfg')">Einstellungen</div></div>
+<div class="tabs"><div class="tab on" onclick="switchTab('timer')">Timer</div><div class="tab" onclick="switchTab('table')">Tabelle</div><div class="tab" onclick="switchTab('stats')">Statistik</div><div class="tab" onclick="switchTab('cluster')">Cluster</div><div class="tab" onclick="switchTab('cfg')">Einstellungen</div></div>
 
 <!-- TIMER -->
 <div class="pnl on" id="pnl-timer">
@@ -58,8 +61,8 @@
 
 <!-- TABLE VIEW -->
 <div class="pnl" id="pnl-table">
-<div class="tshdr"><span class="stit">Notion Datenbank</span><button class="btn btn-sm btn-s" onclick="fetchTableData()">&#8635; Aktualisieren</button></div>
-<div class="ntbl-wrap"><table class="ntbl" id="notionTable"><thead><tr><th style="width:4%"></th><th style="width:26%">Task</th><th style="width:15%">Status</th><th style="width:11%">Est.</th><th style="width:11%">Actual</th><th style="width:33%">Beschreibung</th></tr></thead><tbody id="notionTableBody"></tbody></table></div>
+<div class="tshdr"><span class="stit">Notion Datenbank</span><div style="display:flex;gap:4px;align-items:center"><a class="link" id="tblNotionLink" href="#" target="_blank" style="display:none;margin-right:4px">In Notion</a><button class="btn btn-sm btn-s" onclick="askClaudeAll()">Ask Claude</button><button class="btn btn-sm btn-s" onclick="fetchTableData()">Aktualisieren</button></div></div>
+<div class="ntbl-wrap"><table class="ntbl" id="notionTable"><thead><tr><th style="width:4%"></th><th style="width:24%">Task</th><th style="width:14%">Status</th><th style="width:10%">Est.</th><th style="width:10%">Actual</th><th style="width:30%">Beschreibung</th><th style="width:8%"></th></tr></thead><tbody id="notionTableBody"></tbody></table></div>
 <div class="add-task-row"><input class="inp" id="newTaskName" placeholder="Neue Aufgabe..."/><input class="inp" id="newTaskEst" type="number" placeholder="min" style="width:60px"/><button class="btn btn-sm btn-p" onclick="createTask()">+ Task</button></div>
 <div class="empty" id="tableEmpty">Verbinde Notion um die Tabelle zu laden</div>
 </div>
@@ -89,10 +92,23 @@
 <hr class="sep">
 <button class="btn btn-d btn-sm" onclick="clearAllData()">Alle Daten l&ouml;schen</button>
 </div>
+<!-- CLUSTER VIEW -->
+<div class="pnl" id="pnl-cluster">
+<div class="sgrid" id="clStats" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px"><div class="sc"><div class="sv">-</div><div class="sl">Tasks</div></div><div class="sc"><div class="sv">-</div><div class="sl">Urgent</div></div><div class="sc"><div class="sv">-</div><div class="sl">Total</div></div><div class="sc"><div class="sv">-</div><div class="sl">Silhouette</div></div></div>
+<div id="clControls" style="display:flex;gap:6px;align-items:center;margin-bottom:10px;flex-wrap:wrap"></div>
+<div id="clUrgBar" style="display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap"></div>
+<div class="cl-wrap"><svg id="clSvg" viewBox="0 0 520 380" style="width:100%;display:block"></svg><div class="cl-tip" id="clTip"></div><div id="clLegend" style="display:flex;justify-content:center;gap:10px;padding-top:6px;border-top:1px solid var(--dv);margin-top:4px;font-size:10px;color:var(--tx2);flex-wrap:wrap"></div></div>
+<div id="clCards" style="display:grid;gap:8px;margin-bottom:12px"></div>
+<div id="clAddRow" style="display:none;gap:6px;margin-bottom:12px;align-items:center;flex-wrap:wrap" class="arow"><input class="inp" id="clNewName" placeholder="Neue Aufgabe..." style="flex:2;min-width:120px"/><input class="inp" id="clNewEst" type="number" placeholder="min" style="width:55px"/><select class="inp" id="clNewCat" style="width:auto;font-size:11px"><option value="">Kategorie</option></select><select class="inp" id="clNewUrg" style="width:auto;font-size:11px"><option value="">Urgency</option></select><button class="btn btn-sm btn-p" onclick="clCreateTask()">+ Task</button></div>
+<div class="empty" id="clEmpty">Verbinde Notion um Tasks zu clustern</div>
+</div>
+<div id="clModal" role="dialog" aria-modal="true"><div class="cl-dlg" id="clDlg"></div></div>
+<div id="claudeModal" role="dialog" aria-modal="true" aria-label="Ask Claude"><div class="cm-dlg"><div class="cm-hdr"><span style="font-size:14px;font-weight:600">Ask Claude</span><button class="bi" onclick="closeCmModal()">X</button></div><div class="cm-body"><div style="font-size:12px;color:var(--tx2);margin-bottom:8px">Dieser Prompt enthalt dein gesamtes Projekt mit allen Tasks. Kopiere ihn und fuege ihn in Claude ein.</div><pre class="cm-pre" id="cmPrompt"></pre></div><div class="cm-foot"><button class="btn btn-p" id="cmCopyBtn" onclick="cmCopy()" style="flex:1">Prompt kopieren</button><button class="btn btn-s" id="cmOpenBtn" onclick="cmOpen()" style="flex:1">Claude oeffnen</button><span class="cm-copied" id="cmCopied">Kopiert</span></div></div></div>
 </div>
 <div class="toast" id="toast"></div>
 
 <script>
+'use strict';
 /* ============================================================
    CONFIG — every tunable value in one place
    ============================================================ */
@@ -108,6 +124,10 @@ var C = {
   PFX:'fs6_',
   PRESETS:[15,25,30,45,60,120,180],
   DEF_EST:'Est. Time', DEF_ACT:'Actual Time',
+  PROP_CAT:'Category', PROP_URG:'Urgency', PROP_DESC:'Description', PROP_TASK:'Task',
+  PROP_CLAUDE_NOTES:'Claude Notes', PROP_CLAUDE_CHAT:'Claude Chat',
+  CL_RESTARTS:12, CL_ITER:80, CL_PCA_ITER:200,
+  CL_SVG_W:520, CL_SVG_H:380, CL_SVG_PAD:40,
   YT_BASE:'https://www.youtube-nocookie.com/embed/',
   YT_PARAMS:'autoplay=0&loop=1&rel=0',
   BEEP_FREQ:660, BEEP_DUR:0.12, BEEP_GAP:0.08, BEEP_PULSES:3,
@@ -123,7 +143,7 @@ var streak=+(localStorage.getItem(C.PFX+'str')||0);
 var cfg=loadJ(C.PFX+'cfg')||{mode:'custom',proxy:'https://focus-proxy.florian-af3.workers.dev',db:'343d7e5e-c2c6-80ac-bf16-c079c5e654a6',est:'Est. Time',act:'Actual Time',stat:'Status ',statF:'Not started, In progress',musicUrl:'https://www.youtube.com/watch?v=bMEUAVOOAls&list=RDbMEUAVOOAls&start_radio=1'};
 var retryQueue=loadJ(C.PFX+'retry')||[];
 var dbSchema=null;
-var notionTasks=[];
+var notionTasks=[];var tableRows=[];
 var timers=[];
 var tid=0;
 var connected=false;
@@ -149,9 +169,19 @@ if(cfg.db){
 }
 
 /* ============================================================
+   ESCAPE KEY HANDLER FOR MODALS
+   ============================================================ */
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){
+    if($('claudeModal').classList.contains('open'))closeCmModal();
+    else if($('clModal').classList.contains('open'))clCloseModal();
+  }
+});
+
+/* ============================================================
    TABS
    ============================================================ */
-function switchTab(t){var n=['timer','table','stats','cfg'];document.querySelectorAll('.tab').forEach(function(e,i){e.classList.toggle('on',n[i]===t)});document.querySelectorAll('.pnl').forEach(function(p){p.classList.toggle('on',p.id==='pnl-'+t)});if(t==='stats'){updStats();renderHist()}if(t==='table'&&connected){fetchTableData()}}
+function switchTab(t){var n=['timer','table','stats','cluster','cfg'];document.querySelectorAll('.tab').forEach(function(e,i){e.classList.toggle('on',n[i]===t)});document.querySelectorAll('.pnl').forEach(function(p){p.classList.toggle('on',p.id==='pnl-'+t)});if(t==='stats'){updStats();renderHist()}if(t==='table'&&connected){fetchTableData()}if(t==='cluster'&&connected){fetchClusterData()}}
 function popEst(){$('manualEst').innerHTML='<option value="0">-- min</option>'+C.PRESETS.map(function(m){return '<option value="'+m+'">'+m+' min</option>'}).join('')}
 
 /* ============================================================
@@ -281,6 +311,19 @@ function matchProp(properties,name){
   return key?properties[key]:null;
 }
 
+/* Helper to extract property values with type handling */
+function extractProp(pg,name,fallback){
+  var p=pg.properties[name]||matchProp(pg.properties,name);
+  if(!p)return fallback||'';
+  if(p.type==='title')return p.title?p.title.map(function(t){return t.plain_text}).join(''):fallback||'';
+  if(p.type==='select'&&p.select)return p.select.name||fallback||'';
+  if(p.type==='status'&&p.status)return p.status.name||fallback||'';
+  if(p.type==='number')return p.number||0;
+  if(p.type==='rich_text')return p.rich_text?p.rich_text.map(function(t){return t.plain_text}).join(''):fallback||'';
+  if(p.type==='url')return p.url||fallback||'';
+  return fallback||'';
+}
+
 /* ============================================================
    NOTION API
    ============================================================ */
@@ -297,23 +340,31 @@ async function nf(path,method,body){
 async function autoConn(){try{var d=await nf('/v1/databases/'+cfg.db,'GET');if(d&&d.object==='database'){setConn(true);flushRetryQueue()}else{setConn(false)}}catch(e){console.warn('autoConn failed:',e);setConn(false)}}
 async function testConnection(){saveConfig();try{var d=await nf('/v1/databases/'+cfg.db,'GET');toast('DB: '+(d.title&&d.title[0]?d.title[0].plain_text:d.id));setConn(true)}catch(e){toast(e.message);setConn(false)}}
 function toggleConnection(){if(connected){autoConn()}else if(cfg.db&&cfg.proxy){autoConn()}else{switchTab('cfg')}}
-function setConn(ok){connected=ok;$('connDot').className='cdot '+(ok?'ok':'off');$('connTxt').textContent=ok?'Notion verbunden':'Nicht verbunden';$('connBtn').textContent=ok?'Laden':'Verbinden'}
+function notionDbUrl(){return 'https://www.notion.so/'+cfg.db.replace(/-/g,'')}
+function setConn(ok){connected=ok;$('connDot').className='cdot '+(ok?'ok':'off');$('connTxt').textContent=ok?'Notion verbunden':'Nicht verbunden';$('connBtn').textContent=ok?'Laden':'Verbinden';var nl=$('tblNotionLink');if(nl){nl.style.display=ok?'':'none';nl.href=notionDbUrl()}}
 
 /* ============================================================
    FETCH TASKS — with property trim matching
    ============================================================ */
 async function fetchTasks(){
   var tl=$('taskList');if(tl)tl.innerHTML='<div style="padding:8px;color:var(--tx2)"><span class="spin"></span> Lade...</div>';
-  var body={page_size:C.NOTION_PS};
-  if(cfg.stat&&cfg.statF){
-    var statName=cfg.stat;
-    var v=cfg.statF.split(',').map(function(s){return s.trim()}).filter(Boolean);
-    if(v.length===1)body.filter={property:statName,status:{equals:v[0]}};
-    else if(v.length>1)body.filter={or:v.map(function(s){return{property:statName,status:{equals:s}}})};
+  try{
+    var body={page_size:C.NOTION_PS};
+    if(cfg.stat&&cfg.statF){
+      var statName=cfg.stat;
+      var v=cfg.statF.split(',').map(function(s){return s.trim()}).filter(Boolean);
+      if(v.length===1)body.filter={property:statName,status:{equals:v[0]}};
+      else if(v.length>1)body.filter={or:v.map(function(s){return{property:statName,status:{equals:s}}})};
+    }
+    var data=await nf('/v1/databases/'+cfg.db+'/query','POST',body);
+    notionTasks=data.results.map(parsePage);
+    renderTaskList();
+  }catch(e){
+    toast('Fehler beim Laden: '+e.message);
+    var tl=$('taskList');
+    if(tl)tl.innerHTML='<div style="padding:8px;color:var(--tx2)">Fehler: '+esc(e.message)+'</div>';
+    notionTasks=[];
   }
-  var data=await nf('/v1/databases/'+cfg.db+'/query','POST',body);
-  notionTasks=data.results.map(parsePage);
-  renderTaskList();
 }
 function parsePage(pg){
   var tp=Object.values(pg.properties).find(function(p){return p.type==='title'});
@@ -327,7 +378,11 @@ function parsePage(pg){
   var actual=null;
   var actProp=matchProp(pg.properties,cfg.act);
   if(actProp&&actProp.type==='number')actual=actProp.number;
-  return{pageId:pg.id,name:name,est:est,actual:actual};
+  var cat='';var catProp=pg.properties[C.PROP_CAT];
+  if(catProp&&catProp.type==='select'&&catProp.select)cat=catProp.select.name||'';
+  var urg='';var urgProp=pg.properties[C.PROP_URG];
+  if(urgProp&&urgProp.type==='select'&&urgProp.select)urg=urgProp.select.name||'';
+  return{pageId:pg.id,name:name,est:est,actual:actual,category:cat,urgency:urg};
 }
 function renderTaskList(){
   var l=$('taskList');if(!l)return;var ids=new Set(timers.map(function(t){return t.pageId}));
@@ -534,6 +589,7 @@ async function fetchTableData(){
     var body={page_size:C.NOTION_PS};
     var data=await nf('/v1/databases/'+cfg.db+'/query','POST',body);
     var rows=data.results.map(parseFullPage);
+    tableRows=rows;
     renderNotionTable(rows);
   }catch(e){
     tbody.innerHTML='';
@@ -551,9 +607,13 @@ function parseFullPage(pg){
   if(actProp&&actProp.type==='number')actual=actProp.number;
   var status='';var statProp=matchProp(pg.properties,cfg.stat);
   if(statProp&&statProp.type==='status'&&statProp.status)status=statProp.status.name||'';
-  var desc='';var descProp=pg.properties['Description'];
+  var desc='';var descProp=pg.properties[C.PROP_DESC];
   if(descProp&&descProp.type==='rich_text')desc=descProp.rich_text?descProp.rich_text.map(function(t){return t.plain_text}).join(''):'';
-  return{pageId:pg.id,name:name,status:status,est:est,actual:actual,desc:desc};
+  var cat='';var catProp=pg.properties[C.PROP_CAT];
+  if(catProp&&catProp.type==='select'&&catProp.select)cat=catProp.select.name||'';
+  var urg='';var urgProp=pg.properties[C.PROP_URG];
+  if(urgProp&&urgProp.type==='select'&&urgProp.select)urg=urgProp.select.name||'';
+  return{pageId:pg.id,name:name,status:status,est:est,actual:actual,desc:desc,category:cat,urgency:urg};
 }
 
 function renderNotionTable(rows){
@@ -572,6 +632,7 @@ function renderNotionTable(rows){
       '<td class="editable" onclick="editCell(this,\''+r.pageId+'\',\'number\',\'est\')">'+( r.est||'--')+'</td>'+
       '<td class="editable" onclick="editCell(this,\''+r.pageId+'\',\'number\',\'act\')">'+(r.actual!=null?r.actual:'--')+'</td>'+
       '<td class="editable" onclick="editCell(this,\''+r.pageId+'\',\'text\',\'desc\')">'+esc(r.desc||'--')+'</td>'+
+      '<td style="text-align:center;padding:2px"><button class="btn btn-sm btn-s" onclick="tableAskClaude(\''+r.pageId+'\')" style="font-size:10px;padding:2px 6px">Claude</button></td>'+
     '</tr>';
   }).join('');
 }
@@ -596,7 +657,7 @@ function editCell(td,pageId,type,field){
     if(type==='number')newVal=newVal?parseFloat(newVal):null;
     if(type==='title'){
       td.textContent=newVal||'--';
-      savePropToNotion(pageId,{title:[{text:{content:newVal||''}}]},cfg.est?null:null,'Task');
+      savePropToNotion(pageId,{title:[{text:{content:newVal||''}}]},cfg.est?null:null,C.PROP_TASK);
     }else if(field==='est'){
       td.textContent=newVal!=null?newVal:'--';
       savePropToNotion(pageId,{number:newVal},'est');
@@ -633,7 +694,7 @@ function editStatus(td,pageId){
 
 async function savePropToNotion(pageId,value,field,propNameOverride){
   var propName=propNameOverride||
-    (field==='est'?cfg.est:field==='act'?cfg.act:field==='stat'?cfg.stat:field==='desc'?'Description':'Task');
+    (field==='est'?cfg.est:field==='act'?cfg.act:field==='stat'?cfg.stat:field==='desc'?C.PROP_DESC:C.PROP_TASK);
   try{
     await nf('/v1/pages/'+pageId,'PATCH',{properties:{[propName]:value}});
   }catch(e){
@@ -745,6 +806,360 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 function fmt(sec){var m=Math.floor(Math.abs(sec)/60),s=Math.abs(sec)%60;return m>=60?Math.floor(m/60)+'h '+m%60+'m':m+':'+String(s).padStart(2,'0')}
 function fmtS(sec){var m=Math.floor(sec/60),s=sec%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
 function toast(msg){var t=$('toast');t.innerHTML=esc(msg);t.classList.add('show');setTimeout(function(){t.classList.remove('show')},C.TOAST_MS)}
+
+/* ============================================================
+   CLUSTER VIEW — K-Means task clustering with PCA projection
+   ============================================================ */
+var CL={tasks:[],k:3,seed:42,urgF:null,pts:[],asgn:[],proj:[],score:0,W:C.CL_SVG_W,H:C.CL_SVG_H,P:C.CL_SVG_PAD};
+var CL_CATS=['Job Search','Content','Learning','Admin','Product/Tech'];
+var CL_URGS=['Urgent','This Week','Soon','Ongoing'];
+var CL_STATS=['Not started','In progress','Done'];
+var CL_US={Urgent:{cv:'var(--red)',bv:'var(--red-bg)'},
+  'This Week':{cv:'var(--orange)',bv:'var(--orange-bg)'},
+  Soon:{cv:'var(--purple)',bv:'var(--purple-bg)'},
+  Ongoing:{cv:'var(--tx3)',bv:'var(--tag)'}};
+var CL_CS=[{cv:'var(--blue)',bv:'var(--blue-bg)'},{cv:'var(--green)',bv:'var(--green-bg)'},{cv:'var(--orange)',bv:'var(--orange-bg)'},{cv:'var(--purple)',bv:'var(--purple-bg)'},{cv:'var(--red)',bv:'var(--red-bg)'}];
+
+/* Seeded PRNG */
+function clRng(s){s=s|0;return function(){s=(s*1664525+1013904223)|0;return(s>>>0)/4294967296}}
+
+/* Feature encoding */
+function clEncode(t){
+  var c=CL_CATS.map(function(x){return x===t.category?1:0});
+  return c.concat([CL_URGS.indexOf(t.urgency)/3,CL_STATS.indexOf(t.status)/2,Math.min((t.est||30)/60,1)]);
+}
+
+/* K-Means++ */
+function clD(a,b){var s=0;for(var i=0;i<a.length;i++)s+=(a[i]-b[i])*(a[i]-b[i]);return Math.sqrt(s)}
+function clKM(data,k,rand){
+  var n=data.length;if(k>=n)return{asgn:data.map(function(_,i){return i%k}),inr:0};
+  var CC=[data[Math.floor(rand()*n)].slice()];
+  while(CC.length<k){var ds=data.map(function(p){var mn=1e9;CC.forEach(function(c){var d=clD(p,c);if(d<mn)mn=d});return mn});var tot=ds.reduce(function(a,b){return a+b*b},0);var r=rand()*tot;for(var i=0;i<n;i++){r-=ds[i]*ds[i];if(r<=0){CC.push(data[i].slice());break}}}
+  var asgn=new Array(n).fill(0);
+  for(var it=0;it<C.CL_ITER;it++){
+    var next=data.map(function(p){var mi=0,md=1e9;CC.forEach(function(c,i){var d=clD(p,c);if(d<md){md=d;mi=i}});return mi});
+    if(next.every(function(a,i){return a===asgn[i]}))break;asgn=next;
+    for(var ci=0;ci<k;ci++){var m=data.filter(function(_,i){return asgn[i]===ci});if(m.length)CC[ci]=CC[ci].map(function(_,d){return m.reduce(function(s,r){return s+r[d]},0)/m.length})}
+  }
+  return{asgn:asgn,inr:data.reduce(function(s,p,i){var d=clD(p,CC[asgn[i]]);return s+d*d},0)};
+}
+function clBestKM(data,k,seed){var best=null;for(var r=0;r<C.CL_RESTARTS;r++){var res=clKM(data,k,clRng(seed*1000+r));if(!best||res.inr<best.inr)best=res}return best}
+
+/* PCA */
+function clPCA(data){
+  var n=data.length,dim=data[0].length;
+  var mu=[];for(var d=0;d<dim;d++){var s=0;for(var i=0;i<n;i++)s+=data[i][d];mu.push(s/n)}
+  var X=data.map(function(r){return r.map(function(v,d){return v-mu[d]})});
+  var cov=[];for(var i=0;i<dim;i++){cov[i]=[];for(var j=0;j<dim;j++){var s=0;for(var kk=0;kk<n;kk++)s+=X[kk][i]*X[kk][j];cov[i][j]=s/Math.max(n-1,1)}}
+  function pi(mat){var v=[];for(var i=0;i<dim;i++)v[i]=i===0?1:0.1/(i+1);for(var t=0;t<C.CL_PCA_ITER;t++){var nv=mat.map(function(row){return row.reduce(function(s,val,j){return s+val*v[j]},0)});var nm=Math.sqrt(nv.reduce(function(s,x){return s+x*x},0))||1;v=nv.map(function(x){return x/nm})}var ev=v.reduce(function(s,vi,i){return s+vi*mat[i].reduce(function(ss,val,j){return ss+val*v[j]},0)},0);return{vec:v,val:ev}}
+  var p1=pi(cov);var def=cov.map(function(row,i){return row.map(function(val,j){return val-p1.val*p1.vec[i]*p1.vec[j]})});var p2=pi(def);
+  return X.map(function(row){return{x:row.reduce(function(s,v,i){return s+v*p1.vec[i]},0),y:row.reduce(function(s,v,i){return s+v*p2.vec[i]},0)}});
+}
+
+/* Silhouette */
+function clSil(data,asgn){
+  var n=data.length,cls=[];asgn.forEach(function(a){if(cls.indexOf(a)<0)cls.push(a)});
+  if(n<=2||cls.length<=1)return 0;var tot=0;
+  for(var i=0;i<n;i++){var same=[],others={};for(var j=0;j<n;j++){if(j===i)continue;if(asgn[j]===asgn[i])same.push(data[j]);else{if(!others[asgn[j]])others[asgn[j]]=[];others[asgn[j]].push(data[j])}}
+    var a=same.length?same.reduce(function(s,p){return s+clD(data[i],p)},0)/same.length:0;
+    var bArr=Object.keys(others).map(function(c){var m=others[c];return m.reduce(function(s,p){return s+clD(data[i],p)},0)/m.length});
+    var b=bArr.length?Math.min.apply(null,bArr):0;var mx=Math.max(a,b);tot+=mx===0?0:(b-a)/mx}
+  return tot/n;
+}
+
+/* Convex Hull */
+function clHull(pts){if(pts.length<3)return pts;var s=pts.slice().sort(function(a,b){return a.x-b.x||a.y-b.y});function cr(O,A,B){return(A.x-O.x)*(B.y-O.y)-(A.y-O.y)*(B.x-O.x)}var lo=[];for(var i=0;i<s.length;i++){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],s[i])<=0)lo.pop();lo.push(s[i])}var up=[];for(var i=s.length-1;i>=0;i--){while(up.length>=2&&cr(up[up.length-2],up[up.length-1],s[i])<=0)up.pop();up.push(s[i])}return lo.slice(0,-1).concat(up.slice(0,-1))}
+function clPadHull(h,cx,cy,pad){return h.map(function(p){var dx=p.x-cx,dy=p.y-cy,l=Math.sqrt(dx*dx+dy*dy)||1;return{x:p.x+dx/l*pad,y:p.y+dy/l*pad}})}
+
+function clMode(arr){var f={};arr.forEach(function(v){f[v]=(f[v]||0)+1});var best='',mx=0;Object.keys(f).forEach(function(k){if(f[k]>mx){mx=f[k];best=k}});return best}
+
+/* Data fetching */
+async function fetchClusterData(){
+  $('clEmpty').style.display='';$('clEmpty').innerHTML='<span class="spin"></span> Lade Tasks...';
+  try{
+    var data=await nf('/v1/databases/'+cfg.db+'/query','POST',{page_size:C.NOTION_PS});
+    CL.tasks=data.results.map(clParsePage).filter(function(t){return t.name});
+    $('clEmpty').style.display=CL.tasks.length?'none':'';
+    if(CL.tasks.length)clRun();else $('clEmpty').textContent='Keine Tasks gefunden';
+  }catch(e){$('clEmpty').textContent='Fehler: '+e.message;$('clEmpty').style.display=''}
+}
+function clParsePage(pg){
+  var tp=Object.values(pg.properties).find(function(p){return p.type==='title'});
+  var name=tp&&tp.title?tp.title.map(function(t){return t.plain_text}).join(''):'';
+  var est=0;var ep=matchProp(pg.properties,cfg.est);if(ep&&ep.type==='number')est=ep.number||0;
+  var status='Not started';var sp=matchProp(pg.properties,cfg.stat);if(sp&&sp.type==='status'&&sp.status)status=sp.status.name||'Not started';
+  var cat='';var cp=pg.properties[C.PROP_CAT];if(cp&&cp.type==='select'&&cp.select)cat=cp.select.name||'';
+  var urg='Ongoing';var up=pg.properties[C.PROP_URG];if(up&&up.type==='select'&&up.select)urg=up.select.name||'Ongoing';
+  var desc='';var dp=pg.properties[C.PROP_DESC];if(dp&&dp.type==='rich_text')desc=dp.rich_text?dp.rich_text.map(function(t){return t.plain_text}).join(''):'';
+  return{pageId:pg.id,name:name,category:cat,urgency:urg,status:status,est:est,desc:desc};
+}
+
+/* Clustering + render */
+function clRun(){
+  var n=CL.tasks.length;if(n<1)return;
+  if(CL.k>=n)CL.k=Math.max(2,n-1);
+  var enc=CL.tasks.map(clEncode);
+  if(n===1){CL.asgn=[0];CL.proj=[{x:0,y:0}];CL.score=0}
+  else{var res=clBestKM(enc,CL.k,CL.seed);CL.asgn=res.asgn;CL.proj=clPCA(enc);CL.score=clSil(enc,CL.asgn)}
+  clRenderAll();
+}
+function clSetK(n){CL.k=n;clRun()}
+function clReSeed(){CL.seed++;clRun()}
+function clSetUrg(u){CL.urgF=CL.urgF===u?null:u;clRenderSvg();clRenderUrgBar()}
+
+function clRenderAll(){clRenderStats();clRenderControls();clRenderUrgBar();clRenderSvg();clRenderLegend();clRenderCards();clRenderAddRow()}
+
+function clRenderStats(){
+  var uc=CL.tasks.filter(function(t){return t.urgency==='Urgent'}).length;
+  var tot=CL.tasks.reduce(function(s,t){return s+t.est},0);var h=Math.floor(tot/60),m=tot%60;
+  $('clStats').innerHTML=[
+    {v:CL.tasks.length,l:'Tasks',s:''},
+    {v:uc,l:'Urgent',s:uc?' style="color:var(--red)"':''},
+    {v:h+'h '+m+'m',l:'Total',s:''},
+    {v:CL.score.toFixed(2),l:'Silhouette',s:CL.score>0.5?' style="color:var(--green)"':CL.score>0.25?'':' style="color:var(--red)"'}
+  ].map(function(x){return '<div class="sc"><div class="sv"'+x.s+'>'+x.v+'</div><div class="sl">'+x.l+'</div></div>'}).join('');
+}
+
+function clRenderControls(){
+  var maxK=Math.min(5,Math.max(2,CL.tasks.length-1));
+  var kOpts=[];for(var i=2;i<=maxK;i++)kOpts.push(i);
+  $('clControls').innerHTML='<span class="stit">Clusters</span>'+
+    kOpts.map(function(n){return '<button class="bi" onclick="clSetK('+n+')" style="'+(CL.k===n?'background:var(--blue);color:#fff':'')+'">'+n+'</button>'}).join('')+
+    '<span style="flex:1"></span><a class="link" href="'+notionDbUrl()+'" target="_blank" style="margin-right:4px">In Notion</a><button class="btn btn-sm btn-s" onclick="clReSeed()">Re-cluster</button><button class="btn btn-sm btn-s" onclick="fetchClusterData()">Laden</button>';
+}
+
+function clRenderUrgBar(){
+  var counts={};CL_URGS.forEach(function(u){counts[u]=CL.tasks.filter(function(t){return t.urgency===u}).length});
+  $('clUrgBar').innerHTML='<button class="cl-opt'+(CL.urgF===null?' on':'')+'" onclick="clSetUrg(null)">Alle</button>'+
+    CL_URGS.map(function(u){var us=CL_US[u];var on=CL.urgF===u;
+      return '<button class="cl-opt'+(on?' on':'')+'" onclick="clSetUrg(\''+u+'\')" style="'+(on?'border-color:'+us.cv+';color:'+us.cv+';background:'+us.bv:'')+'"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+us.cv+'"></span>'+u+' <span style="opacity:.5">'+counts[u]+'</span></button>';
+    }).join('');
+}
+
+function clRenderSvg(){
+  var W=CL.W,H=CL.H,P=CL.P;
+  var xs=CL.proj.map(function(p){return p.x}),ys=CL.proj.map(function(p){return p.y});
+  var xn=Math.min.apply(null,xs),xx=Math.max.apply(null,xs),yn=Math.min.apply(null,ys),yx=Math.max.apply(null,ys);
+  var xr=xx-xn||1,yr=yx-yn||1;
+  CL.pts=CL.tasks.map(function(t,i){return{idx:i,pageId:t.pageId,name:t.name,category:t.category,urgency:t.urgency,status:t.status,est:t.est,desc:t.desc,cluster:CL.asgn[i],px:P+((CL.proj[i].x-xn)/xr)*(W-2*P),py:P+((CL.proj[i].y-yn)/yr)*(H-2*P)}});
+  var dimSet={};if(CL.urgF)CL.pts.forEach(function(p){if(p.urgency!==CL.urgF)dimSet[p.idx]=true});
+  var svg='';
+  /* Grid dots */
+  for(var i=0;i<8;i++)for(var j=0;j<6;j++){svg+='<circle cx="'+(P+((W-2*P)/7)*i).toFixed(1)+'" cy="'+(P+((H-2*P)/5)*j).toFixed(1)+'" r="0.8" style="fill:var(--tx3);opacity:.3"/>';}
+  /* Constellation lines */
+  for(var ci=0;ci<CL.k;ci++){var ms=CL.pts.filter(function(p){return p.cluster===ci});if(!ms.length)continue;var cx=ms.reduce(function(s,p){return s+p.px},0)/ms.length;var cy=ms.reduce(function(s,p){return s+p.py},0)/ms.length;var cs=CL_CS[ci%CL_CS.length];ms.forEach(function(p){svg+='<line x1="'+p.px.toFixed(1)+'" y1="'+p.py.toFixed(1)+'" x2="'+cx.toFixed(1)+'" y2="'+cy.toFixed(1)+'" style="stroke:'+cs.cv+';stroke-width:.6;opacity:'+(dimSet[p.idx]?'.03':'.12')+'"/>';})}
+  /* Hull regions */
+  for(var ci=0;ci<CL.k;ci++){var ms=CL.pts.filter(function(p){return p.cluster===ci});if(ms.length<3)continue;var cx=ms.reduce(function(s,p){return s+p.px},0)/ms.length;var cy=ms.reduce(function(s,p){return s+p.py},0)/ms.length;var h=clHull(ms.map(function(p){return{x:p.px,y:p.py}}));var ph=clPadHull(h,cx,cy,24);var cs=CL_CS[ci%CL_CS.length];svg+='<path d="'+ph.map(function(p,i){return(i?'L':'M')+p.x.toFixed(1)+','+p.y.toFixed(1)}).join('')+'Z" style="fill:'+cs.bv+';stroke:'+cs.cv+';stroke-width:1;stroke-opacity:.15;stroke-dasharray:4 4;fill-opacity:.4"/>';}
+  /* Points */
+  CL.pts.forEach(function(p){
+    var dim=dimSet[p.idx];var us=CL_US[p.urgency]||CL_US.Ongoing;var cs=CL_CS[p.cluster%CL_CS.length];
+    var r=5+(p.est/60)*6;
+    /* Cluster ring */
+    svg+='<circle cx="'+p.px.toFixed(1)+'" cy="'+p.py.toFixed(1)+'" r="'+(r+2).toFixed(1)+'" style="fill:none;stroke:'+cs.cv+';stroke-width:1.2;opacity:'+(dim?'.05':'.3')+'"/>';
+    /* Main dot */
+    svg+='<circle cx="'+p.px.toFixed(1)+'" cy="'+p.py.toFixed(1)+'" r="'+r.toFixed(1)+'" style="fill:'+us.cv+';fill-opacity:'+(dim?'.1':'.7')+';cursor:pointer;transition:fill-opacity .15s" onmouseenter="clTipShow('+p.idx+')" onmouseleave="clTipHide()" onclick="clEdit('+p.idx+')"/>';
+    /* Status mark */
+    if(p.status==='Done')svg+='<text x="'+p.px.toFixed(1)+'" y="'+(p.py+1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:'+(r<7?5:6)+'px;fill:var(--bg);font-weight:700;pointer-events:none;opacity:'+(dim?.1:.9)+'">D</text>';
+    else if(p.status==='In progress')svg+='<text x="'+p.px.toFixed(1)+'" y="'+(p.py+1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" style="font-size:'+(r<7?5:6)+'px;fill:var(--bg);font-weight:700;pointer-events:none;opacity:'+(dim?.1:.9)+'">IP</text>';
+  });
+  $('clSvg').innerHTML=svg;
+}
+
+/* Tooltip */
+function clTipShow(idx){
+  var p=CL.pts[idx];if(!p)return;var tip=$('clTip');var us=CL_US[p.urgency]||CL_US.Ongoing;
+  tip.innerHTML='<div style="font-weight:600;margin-bottom:2px">'+esc(p.name)+'</div><div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:2px"><span class="badge" style="background:'+us.bv+';color:'+us.cv+'">'+p.urgency+'</span>'+(p.category?'<span class="badge" style="background:var(--tag);color:var(--tx2)">'+esc(p.category)+'</span>':'')+'</div><div style="color:var(--tx2)">'+p.est+'min &middot; Cluster '+(p.cluster+1)+'</div>';
+  tip.style.display='block';
+  var svgEl=$('clSvg');var rect=svgEl.getBoundingClientRect();
+  var sx=(p.px/CL.W)*rect.width+8;var sy=(p.py/CL.H)*rect.height+8;
+  tip.style.left=Math.max(0,Math.min(sx-tip.offsetWidth/2,rect.width-tip.offsetWidth))+'px';
+  tip.style.top=Math.max(0,sy-tip.offsetHeight-14)+'px';
+}
+function clTipHide(){$('clTip').style.display='none'}
+
+function clRenderLegend(){
+  $('clLegend').innerHTML=CL_URGS.map(function(u){return '<span style="display:inline-flex;align-items:center;gap:3px"><span style="width:6px;height:6px;border-radius:50%;background:'+CL_US[u].cv+'"></span>'+u+'</span>'}).join('')+
+    '<span style="display:inline-flex;align-items:center;gap:2px;margin-left:4px"><svg width="18" height="10"><circle cx="4" cy="5" r="3" style="fill:var(--tx3);opacity:.4"/><circle cx="12" cy="5" r="5" style="fill:var(--tx3);opacity:.4"/></svg>= Zeit</span>'+
+    '<span style="display:inline-flex;align-items:center;gap:2px"><span style="width:8px;height:8px;border-radius:50%;border:1.5px dashed '+CL_CS[0].cv+';display:inline-block"></span>= Cluster</span>';
+}
+
+function clRenderCards(){
+  var cols=CL.k<=3?'repeat('+CL.k+',1fr)':'repeat(2,1fr)';
+  $('clCards').style.gridTemplateColumns=cols;
+  $('clCards').innerHTML=Array.from({length:CL.k},function(_,ci){
+    var ms=CL.pts.filter(function(p){return p.cluster===ci});if(!ms.length)return '';
+    var topCat=clMode(ms.map(function(p){return p.category}));
+    var topUrg=clMode(ms.map(function(p){return p.urgency}));
+    var tot=ms.reduce(function(s,p){return s+p.est},0);var cs=CL_CS[ci%CL_CS.length];var us=CL_US[topUrg]||CL_US.Ongoing;
+    return '<div class="cl-card"><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><span style="width:8px;height:8px;border-radius:50%;background:'+cs.cv+'"></span><span style="font-size:12px;font-weight:600">Cluster '+(ci+1)+'</span><span style="font-size:10px;color:var(--tx2);margin-left:auto">'+ms.length+' Tasks</span></div>'+
+      '<div style="display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap"><span class="badge" style="background:'+us.bv+';color:'+us.cv+';font-size:10px">'+topUrg+'</span>'+(topCat?'<span class="badge" style="background:var(--tag);color:var(--tx2);font-size:10px">'+esc(topCat)+'</span>':'')+'</div>'+
+      '<div style="font-size:10px;color:var(--tx2);margin-bottom:4px">'+tot+'min total &middot; ~'+Math.round(tot/ms.length)+'min avg</div>'+
+      ms.map(function(p){var pu=CL_US[p.urgency]||CL_US.Ongoing;return '<div class="cl-card-task" onclick="clEdit('+p.idx+')" style="border-left:2px solid '+cs.cv+'"><span style="width:5px;height:5px;border-radius:50%;background:'+pu.cv+';flex-shrink:0"></span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">'+esc(p.name)+'</span><span class="cl-play" onclick="event.stopPropagation();clStartTimer('+p.idx+')" title="Timer starten">Start</span></div>'}).join('')+
+    '</div>';
+  }).join('');
+}
+
+function clRenderAddRow(){
+  var row=$('clAddRow');row.style.display='flex';
+  var cs=$('clNewCat');if(cs.options.length<=1){CL_CATS.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o)})}
+  var us=$('clNewUrg');if(us.options.length<=1){CL_URGS.forEach(function(u){var o=document.createElement('option');o.value=u;o.textContent=u;us.appendChild(o)})}
+}
+
+/* Edit modal */
+function clEdit(idx){
+  var p=CL.pts[idx];if(!p)return;clTipHide();
+  var us=CL_US[p.urgency]||CL_US.Ongoing;
+  $('clDlg').innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><div><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="width:8px;height:8px;border-radius:50%;background:'+us.cv+'"></span><span style="font-size:14px;font-weight:600">'+esc(p.name)+'</span></div>'+(p.desc?'<div style="font-size:11px;color:var(--tx2)">'+esc(p.desc)+'</div>':'')+'</div><button class="bi" onclick="clCloseModal()" style="flex-shrink:0">&times;</button></div>'+
+    '<div class="sg" style="margin-bottom:10px"><label>Category</label><div style="display:flex;gap:4px;flex-wrap:wrap">'+CL_CATS.map(function(c){return '<button class="cl-opt'+(p.category===c?' on':'')+'" onclick="clSaveProp('+idx+',\'Category\',\''+c+'\',\'category\')">'+esc(c)+'</button>'}).join('')+'</div></div>'+
+    '<div class="sg" style="margin-bottom:10px"><label>Urgency</label><div style="display:flex;gap:4px;flex-wrap:wrap">'+CL_URGS.map(function(u){var ux=CL_US[u];var on=p.urgency===u;return '<button class="cl-opt'+(on?' on':'')+'" onclick="clSaveProp('+idx+',\'Urgency\',\''+u+'\',\'urgency\')" style="'+(on?'border-color:'+ux.cv+';color:'+ux.cv+';background:'+ux.bv:'')+'"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:'+ux.cv+'"></span>'+u+'</button>'}).join('')+'</div></div>'+
+    '<div class="sg" style="margin-bottom:10px"><label>Status</label><div style="display:flex;gap:4px">'+CL_STATS.map(function(s){return '<button class="cl-opt'+(p.status===s?' on':'')+'" onclick="clSaveProp('+idx+',\'Status \',\''+s+'\',\'status\')">'+s+'</button>'}).join('')+'</div></div>'+
+    '<div class="sg"><label>Geschätzte Zeit</label><div style="display:flex;align-items:center;gap:10px"><input type="range" min="5" max="120" step="5" value="'+p.est+'" style="flex:1" onchange="clSaveEst('+idx+',this.value)" oninput="this.nextElementSibling.textContent=this.value+\' min\'"/><span style="font-size:13px;font-weight:600;color:var(--blue);min-width:45px;text-align:right">'+p.est+' min</span></div></div>'+
+    '<div style="display:flex;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--dv)"><button class="btn btn-p" onclick="clStartTimer('+idx+')" style="flex:1">Timer starten</button><button class="btn btn-s" onclick="clAskClaude('+idx+')" style="flex:1">Ask Claude</button><button class="btn btn-s" onclick="clCloseModal()" style="flex:0 0 auto">X</button></div>'+
+    '<div style="text-align:center;margin-top:6px;font-size:10px;color:var(--tx3)">Cluster '+(p.cluster+1)+' &middot; Änderungen werden in Notion gespeichert</div>';
+  $('clModal').classList.add('open');
+  $('clModal').onclick=function(e){if(e.target===$('clModal'))clCloseModal()};
+}
+function clCloseModal(){$('clModal').classList.remove('open')}
+
+async function clSaveProp(idx,notionProp,value,localField){
+  CL.tasks[idx][localField]=value;clRun();clEdit(idx);
+  var propType=localField==='status'?'status':'select';
+  try{await nf('/v1/pages/'+CL.tasks[idx].pageId,'PATCH',{properties:{[notionProp]:{[propType]:{name:value}}}});toast(notionProp+' → '+value)}catch(e){toast('Fehler: '+e.message)}
+}
+async function clSaveEst(idx,value){
+  var v=parseInt(value)||0;CL.tasks[idx].est=v;clRun();clEdit(idx);
+  if(cfg.est){try{await nf('/v1/pages/'+CL.tasks[idx].pageId,'PATCH',{properties:{[cfg.est]:{number:v}}});toast(v+' min → Notion')}catch(e){toast('Fehler: '+e.message)}}
+}
+
+/* Ask Claude — build project context, copy + open claude.ai */
+function buildClaudePrompt(focusTask){
+  /* Gather all tasks from whichever source is available */
+  var allTasks=CL.tasks.length?CL.tasks:notionTasks.map(function(t){return{name:t.name,category:t.category||'',urgency:t.urgency||'',status:t.status||'',est:t.est||0,desc:t.desc||''}});
+  var notionUrl='https://www.notion.so/'+cfg.db.replace(/-/g,'');
+  var lines=['# Project Implementation - Notion','','Source: '+notionUrl,'','## All Tasks Overview',''];
+  /* Group by status */
+  var groups={'In progress':[],'Not started':[],'Done':[]};
+  allTasks.forEach(function(t){var g=groups[t.status]||groups['Not started'];g.push(t)});
+  Object.keys(groups).forEach(function(status){
+    if(!groups[status].length)return;
+    lines.push('### '+status+' ('+groups[status].length+')');
+    groups[status].forEach(function(t){
+      lines.push('- '+t.name+(t.category?' ['+t.category+']':'')+(t.urgency?' ('+t.urgency+')':'')+' - '+t.est+'min'+(t.desc?' — '+t.desc:''));
+    });
+    lines.push('');
+  });
+  /* Focus section */
+  if(focusTask){
+    lines.push('---','','## Focus Task: '+focusTask.name,'');
+    if(focusTask.category)lines.push('Category: '+focusTask.category);
+    lines.push('Urgency: '+(focusTask.urgency||'not set'));
+    lines.push('Status: '+(focusTask.status||'not set'));
+    lines.push('Estimated time: '+focusTask.est+' minutes');
+    if(focusTask.desc)lines.push('Description: '+focusTask.desc);
+    lines.push('');
+  }
+  lines.push('---','','Given the full project context above'+(focusTask?', focus on "'+focusTask.name+'" and':'')+ ' help me:');
+  lines.push('1. Break '+(focusTask?'this task':'the highest-priority tasks')+' into concrete, actionable steps');
+  lines.push('2. Identify dependencies between tasks and potential blockers');
+  lines.push('3. Suggest the most efficient order of execution');
+  lines.push('4. Flag any risks or things I might be overlooking');
+  return lines.join('\n');
+}
+/* Claude modal state */
+var cmState={prompt:'',pageId:null,focusName:'',copied:false};
+
+function askClaude(focusTask,pageId){
+  var prompt=buildClaudePrompt(focusTask);
+  cmState={prompt:prompt,pageId:pageId,focusName:focusTask?focusTask.name:'All tasks',copied:false};
+  $('cmPrompt').textContent=prompt;
+  $('cmCopied').classList.remove('show');
+  $('cmCopyBtn').textContent='Prompt kopieren';
+  $('claudeModal').classList.add('open');
+  $('claudeModal').onclick=function(e){if(e.target===$('claudeModal'))closeCmModal()};
+  /* Save note to Notion in background */
+  if(pageId&&connected){
+    var ts=new Date().toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    var note=ts+' — Ask Claude: '+cmState.focusName;
+    ensureClaudeProps().then(function(){
+      return nf('/v1/pages/'+pageId,'PATCH',{properties:{
+        [C.PROP_CLAUDE_NOTES]:{rich_text:[{text:{content:note.substring(0,2000)}}]}
+      }});
+    }).catch(function(){/* silent */});
+  }
+}
+function closeCmModal(){$('claudeModal').classList.remove('open')}
+function cmCopy(){
+  var ok=false;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(cmState.prompt).then(function(){cmCopyDone()}).catch(function(){cmCopyFallback()})
+  }else{cmCopyFallback()}
+}
+function cmCopyFallback(){
+  var ta=document.createElement('textarea');ta.value=cmState.prompt;ta.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');cmCopyDone()}catch(e){toast('Kopieren fehlgeschlagen — bitte manuell markieren und kopieren')}
+  document.body.removeChild(ta);
+}
+function cmCopyDone(){
+  cmState.copied=true;
+  $('cmCopied').classList.add('show');
+  $('cmCopyBtn').textContent='Kopiert';
+  toast('Prompt kopiert — jetzt Claude oeffnen und mit Cmd+V einfuegen');
+}
+function cmOpen(){
+  if(!cmState.copied)cmCopy();
+  setTimeout(function(){try{window.open('https://claude.ai/new','_blank')}catch(e){toast('Popup blockiert — oeffne claude.ai manuell')}},cmState.copied?0:300);
+}
+
+/* Ensure Claude Notes + Claude Chat properties exist in the database */
+var claudePropsReady=false;
+function ensureClaudeProps(){
+  if(claudePropsReady)return Promise.resolve();
+  var props={};props[C.PROP_CLAUDE_NOTES]={rich_text:{}};props[C.PROP_CLAUDE_CHAT]={url:{}};
+  return nf('/v1/databases/'+cfg.db,'PATCH',{properties:props}).then(function(){
+    claudePropsReady=true;
+    if(!localStorage.getItem('claudePropsNotified')){
+      localStorage.setItem('claudePropsNotified','1');
+      toast('Notion: "Claude Notes" und "Claude Chat" Spalten erstellt — in Notion-View mit + einblenden');
+    }
+  }).catch(function(){claudePropsReady=true});
+}
+function clAskClaude(idx){
+  var t=CL.tasks[idx];clCloseModal();askClaude(t||null,t?t.pageId:null);
+}
+function tableAskClaude(pageId){
+  var rows=typeof tableRows!=='undefined'?tableRows:[];
+  var r=rows.find(function(x){return x.pageId===pageId});
+  var focus=r?{name:r.name,category:r.category||'',urgency:r.urgency||'',status:r.status||'',est:r.est||0,desc:r.desc||''}:null;
+  if(!focus){var nt=notionTasks.find(function(x){return x.pageId===pageId});if(nt)focus={name:nt.name,category:nt.category||'',urgency:nt.urgency||'',status:nt.status||'',est:nt.est||0,desc:''}}
+  askClaude(focus,pageId);
+}
+function askClaudeAll(){askClaude(null,null)}
+
+/* Start timer from cluster */
+function clStartTimer(idx){
+  var t=CL.tasks[idx];if(!t)return;
+  clCloseModal();mkTimer(t.name,t.est,t.pageId);
+  switchTab('timer');toast('Timer gestartet: '+t.name);
+}
+
+/* Create task from cluster */
+async function clCreateTask(){
+  var name=$('clNewName').value.trim();if(!name){toast('Task-Name eingeben');return}
+  var est=parseInt($('clNewEst').value)||null;
+  var cat=$('clNewCat').value;var urg=$('clNewUrg').value;
+  try{
+    var body={parent:{database_id:cfg.db},properties:{}};body.properties[C.PROP_TASK]={title:[{text:{content:name}}]};
+    if(est&&cfg.est)body.properties[cfg.est]={number:est};
+    if(cat)body.properties[C.PROP_CAT]={select:{name:cat}};
+    if(urg)body.properties[C.PROP_URG]={select:{name:urg}};
+    await nf('/v1/pages/','POST',body);
+    toast('Task erstellt: '+name);
+    $('clNewName').value='';$('clNewEst').value='';
+    fetchClusterData();fetchTasks();
+  }catch(e){toast('Fehler: '+e.message)}
+}
 </script>
 </body>
 </html>
